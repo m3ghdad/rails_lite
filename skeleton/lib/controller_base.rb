@@ -8,20 +8,43 @@ class ControllerBase
 
   # Setup the controller
   def initialize(req, res)
+    @req, @res = req, res
+
   end
 
   # Helper method to alias @already_built_response
   def already_built_response?
+    @already_built_response
   end
 
   # Set the response status code and header
   def redirect_to(url)
+    raise 'cannot render twice' if already_built_response?
+    @res['Location'] = url
+    @res.status = 302
+
+    @already_built_response = true
+
+    # ssuing a redirect consists of two parts,
+    # setting the 'Location' field of the response header to the redirect
+    # url and setting the response status code to 302.
+    # Do not use #redirect; set each piece of the response individually.
+    # Check the Rack::Response docs for how to set response header fields and statuses. Again,
+    # set @already_built_response to avoid a double render.
   end
 
   # Populate the response with content.
   # Set the response's content type to the given type.
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
+    #it checks that content is not rendered twice
+    raise 'cannot render twice' if already_built_response?
+    #sets response object's body
+    @res.write(content)
+    #sets responnse object's content_type
+    @res['Content-Type'] = content_type
+
+    @already_built_response = true
   end
 
   # use ERB and binding to evaluate templates
@@ -37,4 +60,3 @@ class ControllerBase
   def invoke_action(name)
   end
 end
-
