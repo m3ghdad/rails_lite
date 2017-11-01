@@ -39,6 +39,7 @@ class Router
   # evaluate the proc in the context of the instance
   # for syntactic sugar :)
   def draw(&proc)
+    instance_eval(&proc)
   end
 
   # make each of these methods that
@@ -58,8 +59,5 @@ class Router
   # either throw 404 or call run on a matched route
   def run(req, res)
     self.match(req) || res.status = 404
-    # name = self.match(req)
-    # n_value = name ||= res.status = 404
-    # controller_base.invoke_action(n_value)
   end
 end
