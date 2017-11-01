@@ -18,7 +18,8 @@ class Route
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
-
+    controller_class = @controller_class.new(req, res, {})
+    controller_class.invoke_action(action_name)
   end
 end
 
@@ -28,6 +29,7 @@ class Router
   def initialize
     @routes = []
   end
+
 
   # simply adds a new route to the list of routes
   def add_route(pattern, method, controller_class, action_name)
@@ -55,5 +57,9 @@ class Router
 
   # either throw 404 or call run on a matched route
   def run(req, res)
+    self.match(req) || res.status = 404
+    # name = self.match(req)
+    # n_value = name ||= res.status = 404
+    # controller_base.invoke_action(n_value)
   end
 end
