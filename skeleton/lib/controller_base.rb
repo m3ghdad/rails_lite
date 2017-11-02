@@ -45,7 +45,7 @@ class ControllerBase
     @res.write(content)
     #sets responnse object's content_type
     @res['Content-Type'] = content_type
-    @session.store_session(@res)
+    session.store_session(@res)
 
     @already_built_response = true
   end
@@ -64,7 +64,7 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
-    @session ||= Session.new(req)
+    @session ||= Session.new(@req)
   end
 
 
