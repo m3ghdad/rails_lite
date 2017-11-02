@@ -62,6 +62,13 @@ class Router
 
   # either throw 404 or call run on a matched route
   def run(req, res)
-    self.match(req) || res.status = 404
+    matching_route = match(req)
+
+    if matching_route.nil?
+      res.status = 404
+    else
+      matching_route.run(req, res)
+    end
+    # self.match(req) || res.status = 404
   end
 end
